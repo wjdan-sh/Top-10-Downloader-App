@@ -15,39 +15,38 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
 
     lateinit var rvQuestion: RecyclerView
-    lateinit var question: MutableList<TopAPP>
     lateinit var btn: Button
     lateinit var tv: TextView
-    var reQuestions = mutableListOf<TopAPP>()
+    var reTopAPP = mutableListOf<TopAPP>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        rvQuestion = findViewById(R.id.rvMain)
+        reTopAPP = findViewById(R.id.rvMain)
         btn = findViewById(R.id.bt1)
         tv = findViewById(R.id.tv)
 
         btn.setOnClickListener {
-            FetchRecentQuestions().execute()
+            FetchRecentTopAPP().execute()
         }
 
     }
 
-    private inner class FetchRecentQuestions : AsyncTask<Void, Void, MutableList<TopAPP>>() {
+    private inner class FetchRecentTopAPP : AsyncTask<Void, Void, MutableList<TopAPP>>() {
         val parser = XMLParser()
         override fun doInBackground(vararg params: Void?): MutableList<TopAPP> {
             val url = URL("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml")
             val urlConnection = url.openConnection() as HttpURLConnection
-            reQuestions = urlConnection.getInputStream()?.let {
+            reTopAPP = urlConnection.getInputStream()?.let {
                 parser.parse(it)
             } as MutableList<TopAPP>
-            return reQuestions
+            return reTopAPP
         }
         override fun onPostExecute(result: MutableList<TopAPP>?) {
             super.onPostExecute(result)
             val adapter =
-                ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, reQuestions)
+                ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, reTopAPP)
             rvQuestion.adapter = myAdapter(result)
             rvQuestion.layoutManager = LinearLayoutManager(applicationContext)
         }
